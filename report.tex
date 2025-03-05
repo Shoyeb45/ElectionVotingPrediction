@@ -51,8 +51,12 @@
     {\LARGE\bfseries Election Data Analysis and Voter Prediction Models\par}
     \vspace{2cm}
     {\Large Predictive Analysis of Voter Behavior for Exit Poll Creation\par}
-    \vspace{4cm}
+    \vspace{3cm}
+    {\Large Shoyeb Ansari\par}
+    \vspace{1cm}
     {\large\today\par}
+    \vfill
+    {\large\textbf{GitHub Repository:} \url{https://github.com/Shoyeb45/ElectionVotingPrediction}\par}
 \end{titlepage}
 
 \thispagestyle{empty}
@@ -220,7 +224,7 @@ We can see most variable don't follow any specific distribution, but 'age' varia
     \centering
     \includegraphics[width=0.7\textwidth]{ageDistri.png}
     \caption{Distribution of age}
-    \label{fig:example}
+    \label{fig:age_dist}
 \end{figure}
 
 There's not that much deviation from the Gaussian distribution of age variable. So we can infer that under some condition age variable is following gaussian distribution.
@@ -285,8 +289,15 @@ We also need to visualize categorical variables. We only have 2 categorical vari
 
 \subsection{Outlier Analysis}
 The dataset was examined for potential outliers that could affect model performance by visualizing box-plot of variables.
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=1\textwidth]{box_plot_before_treatmant.png}
+    \caption{Function for treating outlier}
+    \label{fig:example}
+\end{figure}
 
 Outliers were treated using the Winsorization method, where we defined the lower and upper bound and value less or greater than them will be replaced by lower and upper bound value respectively. 
+
 \begin{figure}[H]
     \centering
     \includegraphics[width=0.7\textwidth]{cs3.png}
@@ -294,10 +305,11 @@ Outliers were treated using the Winsorization method, where we defined the lower
     \label{fig:example}
 \end{figure}
 
+
 \begin{figure}[H]
     \centering
-    \includegraphics[width=1\textwidth]{boxplot.png}
-    \caption{Box plots before outlier treatmant }
+    \includegraphics[width=1\textwidth]{boxplot_after_outlier_treatmant.png}
+    \caption{Box plots after outlier treatmant }
     \label{fig:example}
 \end{figure}
 
@@ -313,7 +325,6 @@ A check for missing values using the \texttt{df.isnull().sum()} function reveale
 Multicollinearity was assessed using:
 \begin{itemize}
     \item A correlation heatmap to visualize relationships between features.
-    \item The Variance Inflation Factor (VIF), where all values were below 5, indicating no severe multicollinearity.
 \end{itemize}
 Since no strong correlations were found between independent variables, all retained features contributed uniquely to the model.
 
@@ -325,8 +336,7 @@ A histogram and Kernel Density Estimate (KDE) plot confirmed that the \texttt{ag
 Outliers were detected using boxplots and the Interquartile Range (IQR) method. Handling outliers was performed as follows:
 \begin{itemize}
     \item Extreme values were either \textbf{capped} using Winsorization or \textbf{removed} if significantly skewed.
-    \item Ensured that outlier handling did not distort the data distribution.
-    \item Maintained a balance between preserving genuine extreme values and removing data points that could negatively impact model performance.
+
 \end{itemize}
 The final dataset was well-prepared for model training, ensuring robust and unbiased predictions.
 
@@ -648,18 +658,62 @@ The performance of all implemented models was compared to determine the most sui
 \toprule
 \textbf{Model} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-Score} \\
 \midrule
-Logistic Regression & 0.8066 & 0.8129 & 0.8066 & 0.8074 \\
-Decision Tree & 0.7967 & 0.7982 & 0.7967 & 0.7969 \\
-Decision Tree (Grid Search) & 0.7967 & 0.7982 & 0.7967 & 0.7969 \\
-Random Forest & 0.8066 & 0.8118 & 0.8066 & 0.8077 \\
-XGBoost & 0.7902 & 0.7953 & 0.7902 & 0.7915 \\
-AdaBoost & 0.8098 & 0.8153 & 0.8098 & 0.8111 \\
-Gradient Boosting & 0.8098 & 0.8161 & 0.8098 & 0.8113 \\
-KNN & 0.7967 & 0.7978 & 0.7967 & 0.7966 \\
-SVM & 0.8033 & 0.8106 & 0.8033 & 0.8048 \\
+Logistic Regression & 0.8066 & 0.8369 & 0.9028 & 0.8686 \\
+Decision Tree  & 0.7967 & 0.8438 & 0.8750 & 0.8591 \\
+Random Forest & 0.8066 & 0.8458 & 0.8889 & 0.8668 \\
+XGBoost & 0.7902 & 0.8486 & 0.8565 & 0.8525 \\
+AdaBoost & 0.8098 & 0.8527 & 0.8843 & 0.8682 \\
+Gradient Boosting & 0.8098 & 0.8527 & 0.8843 & 0.8682 \\
+KNN & 0.7967 & 0.8438 & 0.8750 & 0.8591 \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Based on the model performance, we can derieve following conclusion for model selection:
+\begin{itemize}
+    \item Selected \textbf{AdaBoost} or \textbf{Gradient Boosting} for best overall results.
+    \item Chose \textbf{Logistic Regression} for focusing on recall (capturing all Labour voters) is most important.
+\end{itemize}
+\section{Insights}
+
+\subsection{Vote Distribution}
+\begin{itemize}
+    \item \textbf{Labour}: 69.7\%
+    \item \textbf{Conservative}: 30.3\%
+    \item Labour has significantly more supporters in this dataset.
+\end{itemize}
+
+\subsection{Demographics}
+\begin{itemize}
+    \item \textbf{Age}: Ranges from 24 to 93, with a mean of 54 years.
+    \item \textbf{Gender}: Almost equal distribution (46.8\% Female, 53.2\% Male).
+\end{itemize}
+
+\subsection{Economic Conditions}
+\begin{itemize}
+    \item \textbf{National Economic Condition Average}: 3.26 (on a scale of 1-5).
+    \item \textbf{Household Economic Condition Average}: 3.16 (similar scale).
+    \item Most people rate economic conditions as neutral/slightly positive.
+\end{itemize}
+
+\subsection{Leadership Ratings}
+\begin{itemize}
+    \item \textbf{Blair (Labour Leader)}: Average rating of 3.33 (higher).
+    \item \textbf{Hague (Conservative Leader)}: Average rating of 2.75.
+\end{itemize}
+
+\subsection{Europe Sentiment}
+\begin{itemize}
+    \item \textbf{Mean Score}: 6.73 (scale 1-11).
+    \item Higher scores indicate Eurosceptic views.
+\end{itemize}
+
+\subsection{Political Knowledge}
+\begin{itemize}
+    \item \textbf{Mean Score}: 1.54 (scale 0-3).
+    \item Many respondents have moderate political knowledge.
+\end{itemize}
+
 
 \end{document}
 </antArtifact
